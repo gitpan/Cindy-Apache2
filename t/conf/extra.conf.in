@@ -1,0 +1,10 @@
+# $Id: extra.conf.in 21 2010-03-10 20:27:14Z jo $
+
+<Directory />
+# LoadModule apreq_module /usr/lib/apache2/modules/mod_apreq2.so
+# Configuration is done in .htaccess
+# TODO: Find out, what excatly is needed
+AllowOverride all
+</Directory>
+
+# vim: ft=apache

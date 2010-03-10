@@ -1,0 +1,62 @@
+# $Id: .htaccess 8 2010-03-01 21:57:10Z jo $
+
+# REMOVE THIS
+# This is used to enable displaying the Cindy Demo Site .htaccess
+# files. It is not recommended for production sites 
+<Files .htaccess>
+Allow from all
+</Files>
+# /REMOVE THIS
+
+# Add last modified header 
+# Note that this will use the frame.html last modified.
+# So directory changes will require a touch on tec/tmpl/frame.html
+XBitHack  full
+
+# If the visible text is not usable as a file name
+# the description can be used
+AddDescription "What's this?" 10_About.shtml
+
+# Do not show the technical files and thge index
+IndexIgnore tec
+
+PerlModule Cindy::Apache2
+AddHandler  perl-script .cindy
+PerlHandler Cindy::Apache2
+
+RewriteEngine On
+
+# Since we need the autoindex for internal use
+# we need to do a replacement index at least for /
+# Only for external requests.
+RewriteCond %{IS_SUBREQ}        ^false$
+RewriteCond %{QUERY_STRING}     !cindy=no
+RewriteRule ^$                  /cindy/test/site/10_About.shtml  [R,L]
+
+# Do not apply cindy to css
+RewriteRule ^(.*\.css)$         $1?cindy=no [QSA]
+
+# To avoid infinite recursion we add an extension to every file we want
+# cindy to handle
+RewriteCond %{REQUEST_FILENAME} !/$
+RewriteCond %{REQUEST_FILENAME} !\.cindy$
+RewriteCond %{QUERY_STRING}     !cindy=no
+RewriteRule ^(.*\.shtml)$      $1.cindy 
+
+# Note that the path is prepended to $1 since per dir rewriting will 
+# otherwise fail in subdirs.
+RewriteRule ^(.*)\.cindy$      -   [L,E=CINDY_DATA_URI:/cindy/test/site/$1?cindy=no]
+
+<Files *.cindy>
+SetEnv  CINDY_DOC_URI   /cindy/test/site/tec/tmpl/frame.html?cindy=no
+SetEnv  CINDY_CIS_URI   /cindy/test/site/tec/cindy/frame.cjs?cindy=no
+</Files>
+
+<Files "menu.shtml.cindy">
+# The menu starts in the menu.html directory
+SetEnv  CINDY_DOC_URI   /cindy/test/site/tec/tmpl/menu.html?cindy=no
+# This is the local directory index 
+SetEnv  CINDY_DATA_URI  ./?cindy=no
+SetEnv  CINDY_CIS_URI   /cindy/test/site/tec/cindy/index.cjs?cindy=no
+</Files>
+
