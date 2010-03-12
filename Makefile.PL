@@ -1,4 +1,4 @@
-# $Id: Makefile.PL 22 2010-03-10 20:27:42Z jo $
+# $Id: Makefile.PL 25 2010-03-12 17:36:29Z jo $
 use 5.006000;
 use ExtUtils::MakeMaker;
 
@@ -29,7 +29,7 @@ WriteMakefile(
     VERSION_FROM      => 'lib/Cindy/Apache2.pm', # finds $VERSION
     PREREQ_PM   => {
 	    'Cindy'	=> '0.07', 
-      'Apache2::Request' => '0',
+      'mod_perl2' => '0', 
     }, 
     ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
       (ABSTRACT_FROM  => 'lib/Cindy/Apache2.pm', # retrieve abstract from module

@@ -11,9 +11,9 @@ package Cindy::Apache2;
 use strict;
 use warnings;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
-use Apache2::Request ();
+use APR::Brigade ();
 use Apache2::Response ();
 use Apache2::SubRequest ();
 use Apache2::Filter ();
@@ -45,7 +45,7 @@ use constant DOC => 'DOC';
 #
 sub handler {
 	my ($r)	= @_;
-  $r = Apache2::Request->new($r);
+  #$r = Apache2::RequestRec->new($r);
   
   my $rv;
 

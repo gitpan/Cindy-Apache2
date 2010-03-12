@@ -1,10 +1,9 @@
-# $Id: extra.conf.in 21 2010-03-10 20:27:14Z jo $
+# $Id: extra.conf.in 29 2010-03-12 17:38:52Z jo $
 
-<Directory />
-# LoadModule apreq_module /usr/lib/apache2/modules/mod_apreq2.so
+<Directory @DocumentRoot@/cindy/>
 # Configuration is done in .htaccess
-# TODO: Find out, what excatly is needed
-AllowOverride all
+# SetEnv will be needed
+AllowOverride FileInfo
 </Directory>
 
 # vim: ft=apache

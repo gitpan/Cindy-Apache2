@@ -29,13 +29,13 @@ else {
 
 SKIP: {
     # Check reqirements
-    use_ok('Apache2::Request') or exit 1;
-    use_ok('Cindy') or exit 1;
+    use_ok('Cindy') ;
     # Check if Cindy::Apache2 is there
-    use_ok('Cindy::Apache2') or exit 1;
+    use_ok('Cindy::Apache2') ;
 
     my $docroot = Apache::Test::vars('documentroot');
 
+    # Basic apache test
     # make sure we can get a regular file
     {
         my $url = '/test.html';
@@ -44,43 +44,26 @@ SKIP: {
         cmp_file_ok $r->content, "$docroot/test.html";
     }
 
+
+    # Check if AllowOverride FileInfo is set
+    {
+        my $url = '/override/test.html';
+        my $r = GET($url);
+        is($r->code, 200, 'override') 
+        or diag(qq|You will need AllowOverride FileInfo in your server configuration
+to use Cindy from .htaccess.|);
+    }
+
     # Try to use Cindy
     # This is an older test for the cindy module.
     # The purpose of this test is not to check if cindy is 
     # working correctly. We just test if cindy is working.
     {
-        my $url = '/cindy_test.html';
+        my $url = '/cindy/cindy.htm';
         my $r = GET($url);
         is $r->code, 200;
 
-        cmp_file_ok $r->content, "$docroot/cindy_test.html";
+        cmp_file_ok $r->content, "$docroot/cindy/cindy_test.html";
     }
 
-
-#    # filter a .less file
-#    {
-#        my $url = '/stylesheet.less';
-#        my $r = GET($url);
-#
-#        is $r->code, 200;
-#        is $r->content_type, 'text/css';
-#
-#        my $expected = join '', CSS::LESSp->parse(
-#            read_file("$docroot/stylesheet.less"));
-#        my $got = $r->content;
-#
-#        $expected =~ s/[\r\n]//g;
-#        $got      =~ s/[\r\n]//g;
-#
-#        is $got, $expected, 'less filtering';
-#    }
-#
-#    # check .less.txt is text/plain
-#    {
-#        my $url = '/stylesheet.less.txt';
-#        my $r = GET($url);
-#
-#        is $r->code, 200;
-#        is $r->content_type, 'text/plain';
-#    }
 }

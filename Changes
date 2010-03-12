@@ -2,4 +2,8 @@ Revision history for Perl extension Cindy::Apache2.
 
 0.01  Fri Feb 26 22:44:14 2010
 	- split off from Cindy-0.07 
+0.02  
+  - removed dependency from Apache2::Request
+  - fixed cindy test
+  - added override test
 
