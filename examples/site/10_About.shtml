@@ -30,7 +30,10 @@
     Cindy is language independent.</p>
    <p></p>
    <p>This resembles a limited version of XSL. The big difference is that 
-    it is still a template engine, that is dreamweaver compatible.</p>
+    Cindy is still a template engine, that is dreamweaver compatible. XSL
+    mixes output template and transformation description and is not 
+    suitable for web design.
+   </p>
 
    <h3>Content Injection Sheets</h3>
    <p style="text-align:left">The description of how to move the data is 
@@ -49,7 +52,7 @@
     <a href="http://search.cpan.org/%7ejzobel/Cindy/"
     >Cindy</a> Apache2 module and SSI for building a static website. 
     As you see you get an albeit limited CMS. Cindy is used to surround 
-    all pages all pages with a constant frame and to create a menu. You
+    all pages with a constant frame and to create a menu. You
     can look at the unmodified pages (such as 
     <a href="./10_About.shtml?cindy=no">this page</a> 
     or <a href="./?cindy=no">its directory index</a>) by adding a 

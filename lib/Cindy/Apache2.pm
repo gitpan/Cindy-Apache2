@@ -1,4 +1,4 @@
-# $Id: Apache2.pm 7 2010-03-01 21:55:46Z jo $
+# $Id: Apache2.pm 38 2010-04-11 19:09:28Z jo $
 # Cindy::Apache2 - mod_perl2 interface for the Cindy module.
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
@@ -11,7 +11,7 @@ package Cindy::Apache2;
 use strict;
 use warnings;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use APR::Brigade ();
 use Apache2::Response ();

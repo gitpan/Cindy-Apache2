@@ -1,4 +1,6 @@
-# test helpers for Apache2::Filter::CSS::LESS
+# $Id: TestHelper.pm 32 2010-03-25 22:00:12Z jo $
+# Copied from Apache2::Filter::CSS::LESS 0.30,
+# Copyright (C) 2009, Michael Schout.
 package My::TestHelper;
 
 use 5.008;

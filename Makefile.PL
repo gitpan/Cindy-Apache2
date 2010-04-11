@@ -1,9 +1,18 @@
-# $Id: Makefile.PL 25 2010-03-12 17:36:29Z jo $
+# $Id: Makefile.PL 41 2010-04-11 19:14:35Z jo $
 use 5.006000;
 use ExtUtils::MakeMaker;
 
+use constant PROMPT_SKIP => 
+'Testing this module requires Apache::Test.
+Do you want to skip testing? [y/N]';
+
 use constant HAVE_APACHE_TEST => eval {
     require Apache::Test && Apache::Test->VERSION >= 1.22
+};
+
+my $prereq_pm = {
+    'Cindy'	=> '0.07', 
+    'mod_perl2' => '0', 
 };
 
 my @CleanFiles;
@@ -19,7 +28,12 @@ if (HAVE_APACHE_TEST) {
     Apache::TestMM::generate_script('t/TEST');
 }
 else {
-    print "Skipping Apache::Test setup (Apache::Test 1.22 or later required)\n";
+    my $skip = prompt(PROMPT_SKIP, 'n');
+    if ($skip !~ /^y/i) {
+        $prereq_pm->{'Apache::Test'} = 0;
+    } else {
+        print "Skipping Apache::Test setup (Apache::Test 1.22 or later required)\n";
+    }
 }
 
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
@@ -27,11 +41,10 @@ else {
 WriteMakefile(
     NAME              => 'Cindy::Apache2',
     VERSION_FROM      => 'lib/Cindy/Apache2.pm', # finds $VERSION
-    PREREQ_PM   => {
-	    'Cindy'	=> '0.07', 
-      'mod_perl2' => '0', 
-    }, 
+    PREREQ_PM         => $prereq_pm,
+    clean             => {FILES => 't/TEST'}, 
     ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
       (ABSTRACT_FROM  => 'lib/Cindy/Apache2.pm', # retrieve abstract from module
        AUTHOR         => 'JZOBEL (jz-2009@heute-morgen.de)') : ()),
 );
+

@@ -10,21 +10,16 @@ use constant HAVE_APACHE_TEST => eval {
     require Apache::Test && Apache::Test->VERSION >= 1.22
 };
 
-unless (HAVE_APACHE_TEST) {
-    plan skip_all => 'Apache::Test 1.22 is not installed';
-}
-elsif (not Apache::Test::need_lwp()) {
-    plan skip_all => 'libwww-perl is not installed';
-}
-else {
+if (HAVE_APACHE_TEST) {
     plan tests => 7;
 
     require Apache::TestUtil;
     require Apache::TestRequest;
 
-    Apache::Test->import(':withtestmore');
     Apache::TestUtil->import;
     Apache::TestRequest->import('GET');
+} else {
+    plan skip_all => 'Apache::Test 1.22 is not installed';
 }
 
 SKIP: {
@@ -65,5 +60,4 @@ to use Cindy from .htaccess.|);
 
         cmp_file_ok $r->content, "$docroot/cindy/cindy_test.html";
     }
-
 }

@@ -7,6 +7,14 @@ use lib 'lib';
 use Apache::TestRunPerl ();
 
 #$Apache::TestTrace::Level = 'debug';
+eval {
+    # It seems Apache::Test is somewhat outdated.
+    # To have it read the build_config in TestConfig, line 192ff
+    # we use the following workaround. 
+    require Apache2::Build;
+    $ENV{MOD_PERL_API_VERSION} 
+        = Apache2::Build->build_config->{API_VERSION};
+};
 
 my $test = Apache::TestRunPerl->new;
 $test->run(@ARGV);
@@ -36,7 +44,7 @@ sub configure_apxs {
 
     if (qx[$sbindir/$target -V] =~ /SERVER_CONFIG_FILE="(.*?)"/) {
       $vars->{httpd_conf} ||= $1;
-    }
+    } 
 }
 
 
