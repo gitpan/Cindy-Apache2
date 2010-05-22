@@ -1,4 +1,4 @@
-; $Id: index.cjs 7 2010-03-01 21:55:46Z jo $
+; $Id: index.cjs 42 2010-05-22 14:23:18Z jo $
 ; Extract a menu from the apache directory index
 
 ; Loop over all index rows (files and directories)
@@ -12,7 +12,8 @@
     ; td[1]/img/@alt='[DIR]' filters directories
 
     ; remove the recursion target, if this is not a dir. row
-    ./td[1]/img[@alt!='[DIR]']  condition ./div
+    ; @alt is appended because it evaluates to true
+    ./td[1]/img[@alt='[DIR]']/@alt  condition ./div
     ; mark a for easier debugging
     ./td[1]/img/@alt           attribute ./a  class
 
@@ -28,7 +29,8 @@
                 ), '_', ' '), 4)" 
                                content ./a ;
     ; Overwrite with a description if there is one
-    ./td[5]                    content ./a ;
+    ; Note that translate removes &nbsp; (' ' is not a blank) 
+    ./td[5][translate(normalize-space(.),' ','')!=''] content ./a ;
 
     ; href URL
     ; noop link for dir, absolute path for href otherwise.

@@ -17,11 +17,18 @@
    <h3>What is Cindy?</h3>
    <p>Cindy is a template engine that was designed to solve the problem of 
     application developers modifying web designer HTML. There have been 
-    earlier approaches wo did this well. The earliest one I know about 
+    earlier approaches who did this well. The earliest one I know about 
     is <a href="http://homepage.mac.com/pauljlucas/software/html_tree/classparser.html"
     >HTML Tree</a>. Another one is 
     <a href="http://wiki.zope.org/ZPT/TALSpecification14"
-    >Zope's TAL</a>.</p>
+    >Zope's TAL</a>. There are at least two recent engines working on 
+    completely unmodified HTML. These are 
+    <a href="http://search.cpan.org/~tomita/Template-Semantic">Template::Semantic</a>
+    and 
+    <a href="http://beebole.com/pure/">PURE</a>. The term <b>unobtrusive</b>
+    (as used by PURE) for template engines that work on valid HTML without 
+    any special content describes this approach best.   
+    </p>
    <p></p>
    <p>Cindy does however go further. It is not a library that mangles data 
     provided through an API. To achieve complete decoupling of application 

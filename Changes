@@ -6,8 +6,9 @@ Revision history for Perl extension Cindy::Apache2.
   - removed dependency from Apache2::Request
   - fixed cindy test
   - added override test
-0,03
+0.03
   - Changed Makefile.PL so that CPAN testers use
     Apache::Test
   - 2nd Apache::Test workaround for httpd autodetection 
-
+0.04
+  - The exampe site requires Cindy 0.11 to work
