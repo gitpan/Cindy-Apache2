@@ -5,6 +5,7 @@
   xmlns:i18n="http://xml.zope.org/namespaces/i18n" 
 >
 <head>
+  <script src="eventLogger.js" language="javascript"></script>
 <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
 <title i18n:translate="">Apache for Webdesigners</title>
 </head>

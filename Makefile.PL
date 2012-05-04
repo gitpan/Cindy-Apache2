@@ -1,4 +1,4 @@
-# $Id: Makefile.PL 43 2010-05-22 14:32:48Z jo $
+# $Id: Makefile.PL 55 2012-04-30 21:17:00Z jo $
 use 5.006000;
 use ExtUtils::MakeMaker;
 
@@ -46,5 +46,10 @@ WriteMakefile(
     ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
       (ABSTRACT_FROM  => 'lib/Cindy/Apache2.pm', # retrieve abstract from module
        AUTHOR         => 'JZOBEL (jz-2009@heute-morgen.de)') : ()),
+    INC               => join(' ', qw(
+                            -I. 
+                            -I/usr/include/apache2 
+                            -I/usr/include/apr-1.0)), 
+    OBJECT            => '$(O_FILES)', # link all the C files too
 );
 

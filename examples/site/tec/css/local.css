@@ -5,12 +5,55 @@
   width:45em; 
 }
 
-p, ul {
+p, ul, ol, form {
   margin-left:2em;
 }
 pre {
   margin-left:4em  
 }
+
+/* Form styles for formPersistence */
+
+label {
+  display: block;
+  float: left;
+  width: 120px; 
+  text-align: right; 
+  padding-right: 10px;
+}
+
+label:after {
+  /* Just couldn't resist */
+  content: ":";
+}
+
+input:not([type]), input[type=text], input[type=password] {
+  width: 100px; 
+}
+
+form br {
+  clear: left; 
+}
+
+fieldset {
+  border: thin solid grey;
+  padding:.5em;
+  display: inline;
+}
+
+form {
+  border: thin solid #ab0;
+  padding:.5em;
+  font-family: sans-serif;
+}
+
+form hr {
+  color:#ab0;
+  background-color:#ab0;
+  height:1px;
+  border:none;
+}
+
 /* Overwrite the givem menu size */
 .menu {
   width:52em; 

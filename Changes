@@ -12,3 +12,5 @@ Revision history for Perl extension Cindy::Apache2.
   - 2nd Apache::Test workaround for httpd autodetection 
 0.04
   - The exampe site requires Cindy 0.11 to work
+0.05
+  - Fixed charset problem by adding HTTPCore.xs

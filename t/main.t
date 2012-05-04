@@ -11,7 +11,7 @@ use constant HAVE_APACHE_TEST => eval {
 };
 
 if (HAVE_APACHE_TEST) {
-    plan tests => 7;
+    plan tests => 11;
 
     require Apache::TestUtil;
     require Apache::TestRequest;
@@ -60,4 +60,20 @@ to use Cindy from .htaccess.|);
 
         cmp_file_ok $r->content, "$docroot/cindy/cindy_test.html";
     }
+
+
+    # small test for a charset problem.
+    {
+        my $url_s = '/charset/cindy.html';
+        my $r_s = GET($url_s);
+        is $r_s->content_charset, 'UTF-8';
+
+        my $url = '/charset/cindy.htm';
+        my $r = GET($url);
+        is $r->code, 200;
+        is $r->content_charset, 'UTF-8';
+
+        cmp_file_ok $r->content, "$docroot/charset/cindy_test.html";
+    }
 }
+

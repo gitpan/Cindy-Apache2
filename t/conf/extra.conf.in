@@ -1,6 +1,12 @@
-# $Id: extra.conf.in 29 2010-03-12 17:38:52Z jo $
+# $Id: extra.conf.in 55 2012-04-30 21:17:00Z jo $
 
 <Directory @DocumentRoot@/cindy/>
+# Configuration is done in .htaccess
+# SetEnv will be needed
+AllowOverride FileInfo
+</Directory>
+
+<Directory @DocumentRoot@/charset/>
 # Configuration is done in .htaccess
 # SetEnv will be needed
 AllowOverride FileInfo

@@ -127,6 +127,21 @@ module lead to concurrency problems. It seems that there now is
 <code>/etc/modprobe.d/nvidia-kernel-nkc</code> to do this, 
 so you may not need it.</p>
 
+<!-- h3>Removable Devices</h3>
+
+<p>If you plug in a removable device (an usb stick, an sd card or the like) into the multi seat box, 
+all users get notified. That is annoying, but the real problem is that one of the logged 
+in users automatically mounts the device. This user is the only one that has write access 
+and that can umount the device. 
+</p>
+
+<p>A solution would be to mount the device with <code>umask=0002,gid=46,users</code> (46 is plugdev). 
+How do we get gnome to do that? GConf can do that with 
+<a href="%25gconf-tree.xml">/etc/gconf/gconf.xml.mandatory/%gconf-tree.xml</a>. This will lead to 
+messages about invalid mount options since we need to allow hal the new options. This is done 
+with <a href="21-storage-methods-local.fdi"
+>/usr/share/hal/fdi/policy/10osvendor/21-storage-methods-local.fdi</a>.</p -->
+
 <h3>Wine Gaming</h3>
 
 <p>Installing wine is - you guessed it - easy. 

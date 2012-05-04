@@ -1,4 +1,4 @@
-# $Id: Apache2.pm 43 2010-05-22 14:32:48Z jo $
+# $Id: Apache2.pm 58 2012-05-04 20:09:34Z jo $
 # Cindy::Apache2 - mod_perl2 interface for the Cindy module.
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
@@ -11,7 +11,7 @@ package Cindy::Apache2;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 use APR::Brigade ();
 use Apache2::Response ();
@@ -25,6 +25,9 @@ use APR::Const    -compile => qw(:error SUCCESS);
 
 use Apache2::RequestRec ();
 use APR::Finfo ();
+
+use Memoize;
+use Storable qw(dclone);
 
 use Cindy;
 use Cindy::Log;
@@ -52,12 +55,14 @@ sub handler {
   # Subrequest for DOC
   my ($doc, $doc_type);
   $rv = read_subrequest($r, DOC, \$doc, \$doc_type);
+  $r->log->debug("DOC content type:".$doc_type);
   if ($rv != Apache2::Const::OK) {
     return $rv;
   }
   # Subrequest for DATA
   my ($data, $data_type);
   $rv = read_subrequest($r, DATA, \$data, \$data_type);
+  $r->log->debug("DATA content type:".$data_type);
   if ($rv != Apache2::Const::OK) {
     return $rv;
   }
@@ -89,7 +94,7 @@ sub handler {
     ERROR "Failed to retrieve content for CIS.";
     return Apache2::Const::SERVER_ERROR;
   }
-  $cis = parse_cis_string($cis);
+  $cis = parse_cis_string_cached($cis);
   if (!defined($cis)) {
     ERROR "Error parsing CIS file.";
     return Apache2::Const::SERVER_ERROR;
@@ -123,7 +128,8 @@ sub read_subrequest($$$;$)
     return $rv;
   }
   if ($rtype) {
-    $$rtype = $rsub->content_type;
+    my $ctype = $rsub->make_content_type($rsub->content_type);
+    $$rtype = $ctype;
   }
   copy_mtime($rsub, $r);
   
@@ -186,6 +192,8 @@ sub parse_by_type($$$)
 {
   my ($type, $text, $what) = @_;
 
+  my $rtn;
+
   if ($type =~ m/html/io) {
     my %opt = (html_parse_noimplied => 1);
     if ($type =~ /;\s*charset\s*=\s*(\S+)/) {
@@ -193,13 +201,19 @@ sub parse_by_type($$$)
       # to the HTML parser
       $opt{encoding} = $1;
     }
-    return parse_html_string($text, \%opt);
+    $rtn = parse_html_string($text, \%opt);
   } elsif ($type =~ m/xml/io) {
-    return parse_xml_string($text);
+    $rtn = parse_xml_string($text);
   } else {
     ERROR "Invalid $what Content-Type $type.";
     return undef;
   }
+
+  if ($what eq DATA) {
+    # Data will not be modified
+    $rtn->indexElements();
+  }
+  return $rtn;
 }
 
 #
@@ -214,13 +228,18 @@ sub Apache2::SubRequest::run_trapped {
   $r->pnotes(__PACKAGE__, $dataref);
   $r->add_output_filter(\&_filter);
   
-  return $r->run;
+  $r->log->debug("Before trapped run:".$r->content_type);
+  my $rv = $r->run;
+  $r->log->debug("After trapped run:".$r->content_type);
+  return $rv;
 }
 
 sub _filter {
   my ($f, $bb) = @_;
   my $r = $f->r;
   my $dataref = $r->pnotes(__PACKAGE__);
+
+  $r->log->debug("In trap filter:".$r->content_type);
 
   $bb->flatten(my $string);
   $$dataref .= $string;
@@ -229,6 +248,50 @@ sub _filter {
   
   return Apache2::Const::OK;
 }
+
+
+#
+# parse_cis_string_cached
+# 
+# - Same parameter as parse_cis_string
+# return is copied to avoid modifications of
+# the cached structure.
+#
+sub parse_cis_string_cached
+{
+  memoize_all();
+  my $cjs = Cindy::parse_cis_string($_[0]);
+  return dclone($cjs);
+}
+
+my $is_memoized = 0;
+sub memoize_all
+{
+  return if ($is_memoized);
+  memoize('Cindy::parse_cis_string');
+  $is_memoized = 1;
+}
+
+#
+# This wraps the function 
+# ap_make_content_type from protocol.c
+# that is not wrapped by mod_perl.
+#
+# The content type that apache 
+# finally sends over the network is 
+# make_content_type($r->content_type) 
+# (see ap_http_header_filter in http_filters.c)
+#
+# This is (as far as I understand it) because of 
+# the meaning of default (use, if no other is set).
+# make_content_type adds the default charset that 
+# has been set with AddDefaultCharset just 
+# before sending the header.
+#
+package Apache2::RequestRec;
+
+require XSLoader;
+XSLoader::load('Cindy::Apache2', $VERSION);
 
 1;
 __END__
