@@ -1,7 +1,7 @@
-/* $Id: local.css 7 2010-03-01 21:55:46Z jo $ */ 
+/* $Id: local.css 61 2012-11-30 15:58:05Z jo $ */ 
 /* Local style additions */
 
-#main {
+#main, #footer {
   width:45em; 
 }
 
@@ -60,4 +60,32 @@ form hr {
   padding-bottom:7em;
 }
 
+#footer form {
+  border: thin solid black;
+  padding:.5em;
+  font-family: sans-serif;
+}
+
+/* Style buttons as links */
+.link, .link:focus, .link:active {
+    /* Remove all decorations */
+    border: none;
+    display: inline;
+    margin: 0em;
+    padding: 0em;
+    outline: none;
+    outline-offset: 0em;
+    /* Look like a link */
+    background: none;
+    color: blue;
+    cursor: pointer;
+    font: inherit;
+    text-decoration: underline;
+}
+
+/* Remove extra space inside buttons in Firefox */
+.link::-moz-focus-inner {
+    border: none;
+    padding: 0em;
+}
 

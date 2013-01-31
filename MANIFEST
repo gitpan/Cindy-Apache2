@@ -18,7 +18,6 @@ examples/site/tec/tmpl/frame.html
 examples/site/tec/tmpl/menu.html
 HTTPCore.xs
 lib/Cindy/Apache2.pm
-lib/Cindy/HTTPCore.pm
 lib/Cindy/Log/Apache2.pm
 Makefile.PL
 MANIFEST			This list of files

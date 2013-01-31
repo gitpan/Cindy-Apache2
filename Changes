@@ -14,3 +14,5 @@ Revision history for Perl extension Cindy::Apache2.
   - The exampe site requires Cindy 0.11 to work
 0.05
   - Fixed charset problem by adding HTTPCore.xs
+0.06
+  - Added CINDY_FATALS_TO_BROWSER

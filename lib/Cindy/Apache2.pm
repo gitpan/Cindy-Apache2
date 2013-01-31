@@ -1,4 +1,4 @@
-# $Id: Apache2.pm 58 2012-05-04 20:09:34Z jo $
+# $Id: Apache2.pm 70 2013-01-31 11:35:42Z jo $
 # Cindy::Apache2 - mod_perl2 interface for the Cindy module.
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
@@ -11,7 +11,7 @@ package Cindy::Apache2;
 use strict;
 use warnings;
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 use APR::Brigade ();
 use Apache2::Response ();
@@ -96,12 +96,15 @@ sub handler {
   }
   $cis = parse_cis_string_cached($cis);
   if (!defined($cis)) {
-    ERROR "Error parsing CIS file.";
     return Apache2::Const::SERVER_ERROR;
   }
 
   INFO "Parsing succeeded. Will do injection now.";
-  my $out = inject($data, $doc, $cis);
+  my $out = eval { inject($data, $doc, $cis) };
+  if ($@) {
+    ERROR $@;
+    return Apache2::Const::SERVER_ERROR;
+  }
 
   INFO "Injection successful. Sending content.";
   $r->set_last_modified;
@@ -176,10 +179,11 @@ sub lookup_by_env($$)
   #if ($lastmod) {
   #  $r_sub->headers_in('If-Modified-Since', time2str($lastmod));
   #}
+  my $env_x = $env_file || $env_uri;
   if (!$rtn) {
-    ERROR "Could not lookup '$env_file' or '$env_uri' for $pname."; 
+    ERROR "Could not lookup '$env_x' for $pname."; 
   } else {
-    DEBUG "Lookup succeeded for '$env_file' or '$env_uri' for $pname."; 
+    DEBUG "Lookup succeeded for '$env_x' for $pname."; 
   }
 
   return $rtn;     
@@ -194,18 +198,24 @@ sub parse_by_type($$$)
 
   my $rtn;
 
-  if ($type =~ m/html/io) {
-    my %opt = (html_parse_noimplied => 1);
-    if ($type =~ /;\s*charset\s*=\s*(\S+)/) {
-      # We pass the encoding from the header
-      # to the HTML parser
-      $opt{encoding} = $1;
+  eval {
+    if ($type =~ m/html/io) {
+      my %opt = (html_parse_noimplied => 1);
+      if ($type =~ /;\s*charset\s*=\s*(\S+)/) {
+        # We pass the encoding from the header
+        # to the HTML parser
+        $opt{encoding} = $1;
+      }
+      $rtn = parse_html_string($text, \%opt);
+    } elsif ($type =~ m/xml/io) {
+      $rtn = parse_xml_string($text);
+    } else {
+      ERROR "Invalid $what Content-Type $type.";
+      return undef;
     }
-    $rtn = parse_html_string($text, \%opt);
-  } elsif ($type =~ m/xml/io) {
-    $rtn = parse_xml_string($text);
-  } else {
-    ERROR "Invalid $what Content-Type $type.";
+  };
+  if ($@) {
+    ERROR $@;
     return undef;
   }
 
@@ -260,7 +270,11 @@ sub _filter {
 sub parse_cis_string_cached
 {
   memoize_all();
-  my $cjs = Cindy::parse_cis_string($_[0]);
+  my $cjs = eval { Cindy::parse_cis_string($_[0]) };
+  if ($@) {
+    ERROR $@;
+    return undef;
+  }
   return dclone($cjs);
 }
 
@@ -339,6 +353,9 @@ processing is aborted and that status is returned. The
 last modified headers of the components are used to
 either add a last modified header to the response or to
 respond with a 304.
+
+If the enviroment variable CINDY_FATALS_TO_BROWSER is set
+error messages are forwarded to the browser.
 
 =head1 AUTHOR
 
