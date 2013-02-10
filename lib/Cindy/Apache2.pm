@@ -1,4 +1,4 @@
-# $Id: Apache2.pm 70 2013-01-31 11:35:42Z jo $
+# $Id: Apache2.pm 71 2013-02-10 13:56:10Z jo $
 # Cindy::Apache2 - mod_perl2 interface for the Cindy module.
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
@@ -11,7 +11,9 @@ package Cindy::Apache2;
 use strict;
 use warnings;
 
-our $VERSION = '0.06';
+BEGIN {
+  our $VERSION = '0.08';
+}
 
 use APR::Brigade ();
 use Apache2::Response ();
@@ -23,7 +25,6 @@ use Apache2::Const -compile => qw(OK DECLINED
 use APR::Const    -compile => qw(:error SUCCESS);
 #use Log::Log4perl qw(:easy);
 
-use Apache2::RequestRec ();
 use APR::Finfo ();
 
 use Memoize;
@@ -31,6 +32,7 @@ use Storable qw(dclone);
 
 use Cindy;
 use Cindy::Log;
+use Cindy::Apache2::RequestRec ();
 
 use constant CIS => 'CIS';
 use constant DATA => 'DATA';
@@ -48,7 +50,6 @@ use constant DOC => 'DOC';
 #
 sub handler {
 	my ($r)	= @_;
-  #$r = Apache2::RequestRec->new($r);
   
   my $rv;
 
@@ -131,7 +132,8 @@ sub read_subrequest($$$;$)
     return $rv;
   }
   if ($rtype) {
-    my $ctype = $rsub->make_content_type($rsub->content_type);
+    my $ctype = Cindy::Apache2::RequestRec::make_content_type(
+                  $rsub, $rsub->content_type);
     $$rtype = $ctype;
   }
   copy_mtime($rsub, $r);
@@ -285,27 +287,6 @@ sub memoize_all
   memoize('Cindy::parse_cis_string');
   $is_memoized = 1;
 }
-
-#
-# This wraps the function 
-# ap_make_content_type from protocol.c
-# that is not wrapped by mod_perl.
-#
-# The content type that apache 
-# finally sends over the network is 
-# make_content_type($r->content_type) 
-# (see ap_http_header_filter in http_filters.c)
-#
-# This is (as far as I understand it) because of 
-# the meaning of default (use, if no other is set).
-# make_content_type adds the default charset that 
-# has been set with AddDefaultCharset just 
-# before sending the header.
-#
-package Apache2::RequestRec;
-
-require XSLoader;
-XSLoader::load('Cindy::Apache2', $VERSION);
 
 1;
 __END__

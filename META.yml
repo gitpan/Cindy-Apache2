@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               Cindy-Apache2
-version:            0.06
+version:            0.08
 abstract:           use unmodified XML or HTML documents as templates.
 author:
     - JZOBEL (jz-2009@heute-morgen.de)

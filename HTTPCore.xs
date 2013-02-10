@@ -27,7 +27,7 @@
 
 #include <modperl_xs_typedefs.h>
 
-MODULE = Cindy::Apache2    PACKAGE = Apache2::RequestRec   PREFIX = ap_
+MODULE = Cindy::Apache2   PACKAGE = Cindy::Apache2::RequestRec PREFIX = ap_
 
 const char *
 ap_make_content_type(r, type)
