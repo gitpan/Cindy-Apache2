@@ -20,3 +20,5 @@ Revision history for Perl extension Cindy::Apache2.
   - Versioning mistake
 0.08
   - Fixed Apache2::RequestRec namespace violation
+0.09
+  - Requires Cindy 0.22 and does just pass the doctype

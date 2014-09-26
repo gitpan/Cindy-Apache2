@@ -1,4 +1,7 @@
-# $Id: extra.conf.in 55 2012-04-30 21:17:00Z jo $
+# $Id: extra.conf.in 73 2014-09-26 21:18:06Z jo $
+
+# This should not be necessary, but it is. Why?
+PerlRequire @ServerRoot@/conf/modperl_inc.pl
 
 <Directory @DocumentRoot@/cindy/>
 # Configuration is done in .htaccess

@@ -1,4 +1,4 @@
-# $Id: Makefile.PL 55 2012-04-30 21:17:00Z jo $
+# $Id: Makefile.PL 73 2014-09-26 21:18:06Z jo $
 use 5.006000;
 use ExtUtils::MakeMaker;
 
@@ -11,7 +11,7 @@ use constant HAVE_APACHE_TEST => eval {
 };
 
 my $prereq_pm = {
-    'Cindy'	=> '0.11', 
+    'Cindy'	=> '0.22', 
     'mod_perl2' => '0', 
 };
 

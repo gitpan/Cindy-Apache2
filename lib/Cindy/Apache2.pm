@@ -1,4 +1,4 @@
-# $Id: Apache2.pm 71 2013-02-10 13:56:10Z jo $
+# $Id: Apache2.pm 73 2014-09-26 21:18:06Z jo $
 # Cindy::Apache2 - mod_perl2 interface for the Cindy module.
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
@@ -12,7 +12,7 @@ use strict;
 use warnings;
 
 BEGIN {
-  our $VERSION = '0.08';
+  our $VERSION = '0.09';
 }
 
 use APR::Brigade ();
@@ -202,7 +202,11 @@ sub parse_by_type($$$)
 
   eval {
     if ($type =~ m/html/io) {
-      my %opt = (html_parse_noimplied => 1);
+      my %opt = (no_implied => 1,
+                 # We do not want this module 
+                 # to add a DOCTYPE.
+                 no_defdtd => 1
+                );
       if ($type =~ /;\s*charset\s*=\s*(\S+)/) {
         # We pass the encoding from the header
         # to the HTML parser
